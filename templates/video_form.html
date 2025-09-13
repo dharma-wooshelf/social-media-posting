@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white shadow rounded-lg p-6">
+  <h2 class="text-xl font-bold mb-4">Upload Video</h2>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      {{ form.title }}
+    </div>
+    <div>
+      {{ form.description }}
+    </div>
+    <div>
+      {{ form.video_file }}
+    </div>
+    <button type="submit" class="w-full bg-pink-600 text-white rounded-lg py-2 hover:bg-pink-700">Upload</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block css %}
+{% endblock %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block content %}
+    <!-- Generate Content Button -->
+    <div class="mb-6">
+        <a href="{% if user_data.is_authenticated %}{% url 'content_generation' %}{% else %}{% url 'login' %}{% endif %}">
+          <button class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg hover:cursor-pointer">
+            Generate Content
+          </button>
+        </a>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Media Library -->
+      <a href="{% if user_data.is_authenticated %}{% url 'media_selection' %}{% else %}{% url 'login' %}{% endif %}">
+          <div class="border rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mb-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm0 2h12v7l-3.5-3.5-4.5 5L6 11l-2 2V5z" />
+            </svg>
+            <h2 class="font-semibold">Media Library</h2>
+            <p class="text-sm text-gray-500">Manage images, videos</p>
+          </div>
+      </a>
+
+      <!-- Text to Speech -->
+      <a href="{% if user_data.is_authenticated %}{% url 'text_to_speech' %}{% else %}{% url 'login' %}{% endif %}">
+          <div class="border rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mb-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 4.804A7.968 7.968 0 005.5 4C3.015 4 1 6.015 1 8.5S3.015 13 5.5 13c.56 0 1.096-.096 1.588-.27A5.978 5.978 0 019 14.804V4.804zM11 5h2v10h-2V5zm4 0h2v10h-2V5z" />
+            </svg>
+            <h2 class="font-semibold">Text to Speech</h2>
+            <p class="text-sm text-gray-500">Generate voiceovers</p>
+          </div>
+      </a>
+
+      <!-- Social Media Posts -->
+
+      <a href="{% if user_data.is_authenticated %}{% url 'social_post' %}{% else %}{% url 'login' %}{% endif %}">
+          <div class="border rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mb-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M18 10c0 4.418-3.582 8-8 8a7.963 7.963 0 01-4.906-1.688L2 18l1.688-3.094A7.963 7.963 0 014 10c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
+            </svg>
+            <h2 class="font-semibold">Social Media Posts</h2>
+            <p class="text-sm text-gray-500">Create captions, hashtags</p>
+          </div>
+      </a>
+
+
+      <!-- Videos -->
+      <a href="{% if user_data.is_authenticated %}{% url 'schedule_publish' %}{% else %}{% url 'login' %}{% endif %}">
+          <div class="border rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mb-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm4 3l6 3-6 3V7z" />
+            </svg>
+            <h2 class="font-semibold">Videos</h2>
+            <p class="text-sm text-gray-500">Produce videos, schedule</p>
+          </div>
+      </a>
+
+    </div>
+{% endblock %}

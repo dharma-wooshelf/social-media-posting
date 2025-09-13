@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white shadow rounded-lg p-6">
+  <h2 class="text-xl font-bold mb-4">Text to Speech</h2>
+  
+  {% if form.errors %}
+    <p class="text-red-600 text-sm mb-2">Please fix the errors below.</p>
+  {% endif %}
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      {{ form.text }}
+    </div>
+    <div>
+      {{ form.voice }}
+    </div>
+    <button type="submit" class="w-full bg-purple-600 text-white rounded-lg py-2 hover:bg-purple-700">Generate</button>
+  </form>
+</div>
+{% endblock %}

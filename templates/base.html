@@ -1,0 +1,99 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Content Creator{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    {% block css %}{% endblock %}
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white shadow-md rounded-2xl p-6 w-full max-w-3xl">
+        <!-- Header -->
+        <div class="relative flex justify-between items-center mb-2">
+            <h1 class="text-xl font-bold">
+                {% block header %}{% endblock %}
+            </h1>
+            <button class="flex items-center space-x-2 text-gray-600" id="userMenuBtn">
+                <i class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 10a4 4 0 100-8 4 4 0 000 8zm-6 8a6 6 0 1112 0H4z" clip-rule="evenodd" />
+                    </svg>
+                </i>
+                <span>{% if user_data.is_authenticated %}{{ user_data.username }}{% else %}Guest{% endif %}</span>
+
+            </button>
+            <!-- Dropdown -->
+            <div id="userDropdown" class="absolute right-0 top-10 mt-2 w-48 bg-white border rounded-lg shadow-lg hidden">
+                {% if user_data.is_authenticated %}
+                    <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="/settings" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
+                    <a href="/logout" class="block px-4 py-2 text-red-600 hover:bg-red-100">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Login</a>
+                    <a href="{% url 'signup' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Signup</a>
+                {% endif %}
+            </div>
+        </div>
+        <nav id="breadcrumbs" class="flex items-center text-sm text-gray-600 mb-6"></nav>
+        {% block content %}{% endblock %}
+    </div>
+    <script>
+    const path = window.location.pathname;
+    const parts = path.split('/').filter(p => p && p !== "dashboard"); // ignore empty + dashboard
+    const container = document.getElementById('breadcrumbs');
+
+    // Always add Dashboard first
+    const dashboardLink = document.createElement('a');
+    dashboardLink.href = "/";
+    dashboardLink.textContent = "Home";
+    dashboardLink.className = "hover:text-blue-400";
+    container.appendChild(dashboardLink);
+
+    if (parts.length > 0) {
+      const sep = document.createElement('span');
+      sep.textContent = " / ";
+      sep.className = "mx-1 text-gray-400";
+      container.appendChild(sep);
+    }
+
+    // Add remaining path parts
+    parts.forEach((part, i) => {
+      const isLast = i === parts.length - 1;
+      const url = "/dashboard/" + parts.slice(0, i + 1).join('/');
+
+      if (!isLast) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = part.charAt(0).toUpperCase() + part.slice(1);
+        link.className = "hover:text-blue-600";
+        container.appendChild(link);
+
+        const sep = document.createElement('span');
+        sep.textContent = " / ";
+        sep.className = "mx-1 text-gray-400";
+        container.appendChild(sep);
+      } else {
+        const span = document.createElement('span');
+        span.textContent = part.charAt(0).toUpperCase() + part.slice(1);
+        span.className = "font-medium text-gray-700";
+        container.appendChild(span);
+      }
+    });
+    const btn = document.getElementById("userMenuBtn");
+    const dropdown = document.getElementById("userDropdown");
+
+    btn.addEventListener("click", () => {
+      dropdown.classList.toggle("hidden");
+    });
+
+    // Optional: close when clicking outside
+    window.addEventListener("click", (e) => {
+      if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>

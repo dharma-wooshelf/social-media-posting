@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Media Selection{% endblock %}
+{% block header %}Media Selection{% endblock %}
+{% block content %}
+<!-- Dropbox Row -->
+    <div class="flex justify-between items-center bg-gray-50 rounded-lg px-4 py-3 mb-6">
+      <div class="flex items-center gap-2">
+        <img src="https://cdn.iconscout.com/icon/free/png-256/dropbox-148-675786.png" class="h-6 w-6" alt="Dropbox" />
+        <span class="font-medium text-gray-700">Dropbox</span>
+      </div>
+      <button class="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600">Browse</button>
+    </div>
+
+    <!-- Media Grid -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <!-- Media 1 -->
+      <label class="relative cursor-pointer">
+        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500" checked>
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-lg w-full h-32 object-cover border" alt="media1">
+      </label>
+
+      <!-- Media 2 -->
+      <label class="relative cursor-pointer">
+        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500">
+        <img src="https://picsum.photos/id/1015/200/150" class="rounded-lg w-full h-32 object-cover border" alt="media2">
+      </label>
+
+      <!-- Media 3 -->
+      <label class="relative cursor-pointer">
+        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500">
+        <img src="https://picsum.photos/id/1003/200/150" class="rounded-lg w-full h-32 object-cover border" alt="media3">
+      </label>
+
+      <!-- Media 4 -->
+      <label class="relative cursor-pointer">
+        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500">
+        <div class="relative">
+          <img src="https://picsum.photos/id/1025/200/150" class="rounded-lg w-full h-32 object-cover border" alt="media4">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-white rounded-full p-2 shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M6.5 5.5l7 4.5-7 4.5v-9z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <!-- Select Button -->
+    <button class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+      Select
+    </button>
+{% endblock %}

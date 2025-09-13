@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Video Generator{% endblock %}
+{% block header %}Create Video{% endblock %}
+{% block content %}
+<div class="space-y-4">
+  <textarea class="w-full border rounded p-2">The top 10 health benefits of regular exercise include...</textarea>
+  <div class="grid grid-cols-3 gap-4">
+    <img src="https://via.placeholder.com/150" class="rounded">
+    <img src="https://via.placeholder.com/150" class="rounded">
+    <img src="https://via.placeholder.com/150" class="rounded">
+  </div>
+  <select class="w-full border rounded p-2">
+    <option>English (US) - Female</option>
+    <option>English (US) - Male</option>
+  </select>
+  <button class="w-full bg-blue-500 text-white py-2 rounded">Create Video</button>
+</div>
+{% endblock %}

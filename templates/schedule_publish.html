@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Schedule & Publish{% endblock %}
+{% block header %}Schedule & Publish{% endblock %}
+{% block content %}
+<div class="flex space-x-6">
+  <div>
+    <input type="date" class="border rounded p-2 mb-2">
+    <input type="time" class="border rounded p-2">
+    <div class="mt-4 space-y-2">
+      <label><input type="checkbox" checked> Facebook</label><br>
+      <label><input type="checkbox" checked> Instagram</label><br>
+      <label><input type="checkbox" checked> LinkedIn</label><br>
+      <label><input type="checkbox"> X</label>
+    </div>
+  </div>
+  <div class="flex-1">
+    <img src="https://via.placeholder.com/200" class="rounded mb-2">
+    <p class="text-sm">The top 10 health benefits of regular exercise include...</p>
+  </div>
+</div>
+<button class="w-full mt-4 bg-blue-500 text-white py-2 rounded">Schedule Post</button>
+{% endblock %}

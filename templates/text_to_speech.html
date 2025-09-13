@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Text to Speech{% endblock %}
+{% block header %}Text to Speech{% endblock %}
+{% block content %}
+<div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-xl">
+    <!-- Header -->
+    <p class="text-gray-600 mb-4">
+      Generate voiceover audio from text using ElevenLabs.
+    </p>
+
+    <!-- Text Area -->
+    <textarea
+      class="w-full border border-gray-300 rounded-xl p-3 mb-4 focus:ring-2 focus:ring-blue-400 outline-none"
+      rows="5"
+      placeholder="Type or paste your script here..."
+    >The top 10 health benefits of regular exercise include improved heart health, increased strength, better mood, weight management, and more.</textarea>
+
+    <!-- Voice Dropdown -->
+    <label class="block text-gray-700 mb-2 font-medium">Voice</label>
+    <select class="w-full border border-gray-300 rounded-xl p-3 mb-4 focus:ring-2 focus:ring-blue-400 outline-none">
+      <option>Adam</option>
+      <option>Sophia</option>
+      <option>James</option>
+    </select>
+
+    <!-- Generate Button -->
+    <button
+      class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl shadow">
+      Generate
+    </button>
+
+    <!-- Preview Audio -->
+    <div class="mt-6 bg-gray-50 border rounded-xl p-4 flex items-center gap-3">
+      <button class="w-12 h-12 bg-white border rounded-full flex items-center justify-center shadow">
+        ▶
+      </button>
+      <div class="flex-1">
+        <div class="flex justify-between text-sm text-gray-600">
+          <span>0:00</span>
+          <span>1:25</span>
+        </div>
+        <div class="w-full h-2 bg-gray-300 rounded-full mt-1">
+          <div class="w-1/3 h-2 bg-blue-500 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

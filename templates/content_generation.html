@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Content Generation{% endblock %}
+{% block header %}Content Generation{% endblock %}
+{% block content %}
+    <!-- Form -->
+    <div class="space-y-4">
+      <!-- Post Type & Tone -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Post Type</label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <option>Text</option>
+            <option>Image</option>
+            <option>Video</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tone</label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <option>Informative</option>
+            <option>Funny</option>
+            <option>Professional</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Input Prompt -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Input Prompt</label>
+        <input type="text" placeholder="Enter a topic or keywords"
+               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+      </div>
+
+      <!-- Generate Button -->
+      <button class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg hover:cursor-pointer" onclick="openModal()" >
+        Generate with Gemini™
+      </button>
+
+      <!-- Output Box -->
+      <div class="border border-gray-300 rounded-lg p-3 text-gray-700">
+        Here is an informative post about your topic. It provides relevant details and helps the reader understand the subject matter.
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end gap-3">
+        <button class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300">Edit</button>
+        <button class="px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 hover:cursor-pointer">Save</button>
+      </div>
+    </div>
+    <!-- Modal -->
+      <div id="contentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-6 rounded-2xl shadow-md w-full max-w-lg">
+
+          <!-- Modal Header -->
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">Generated Content Ideas</h2>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
+          </div>
+
+          <!-- Content Ideas (radio buttons) -->
+          <div class="space-y-3 mb-4">
+            <label class="flex items-start gap-2 border rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
+              <input type="radio" name="idea" class="mt-1 text-blue-500" checked>
+              <span>Here is an informative post about your topic. It provides relevant details and helps the reader understand the subject matter.</span>
+            </label>
+
+            <label class="flex items-start gap-2 border rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
+              <input type="radio" name="idea" class="mt-1 text-blue-500">
+              <span>This post shares key insights on your topic and offers useful information to the audience.</span>
+            </label>
+
+            <label class="flex items-start gap-2 border rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
+              <input type="radio" name="idea" class="mt-1 text-blue-500">
+              <span>An explanatory post on your topic that breaks down important information for the reader.</span>
+            </label>
+          </div>
+
+          <!-- Footer Button -->
+          <button class="w-full bg-blue-400 text-white py-2 rounded-lg hover:bg-blue-500 hover:cursor-pointer">
+            More Content Ideas
+          </button>
+        </div>
+      </div>
+
+      <script>
+        function openModal() {
+          document.getElementById("contentModal").classList.remove("hidden");
+          document.getElementById("contentModal").classList.add("flex");
+        }
+        function closeModal() {
+          document.getElementById("contentModal").classList.add("hidden");
+          document.getElementById("contentModal").classList.remove("flex");
+        }
+      </script>
+{% endblock %}

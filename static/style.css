@@ -1,0 +1,52 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f9fafb;
+  color: #1f2937;
+  margin: 0;
+  padding: 0;
+}
+.dashboard {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+h1, h2, h3 {
+  margin: 0.5rem 0;
+}
+.user-profile {
+  background: #e5e7eb;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+}
+.main-button {
+  text-align: center;
+  margin: 2rem 0;
+}
+.primary-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.card {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}

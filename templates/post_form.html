@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white shadow rounded-lg p-6">
+  <h2 class="text-xl font-bold mb-4">Create Social Post</h2>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      {{ form.caption }}
+    </div>
+    <div>
+      {{ form.hashtags }}
+    </div>
+    <div>
+      {{ form.media }}
+    </div>
+    <div>
+      {{ form.scheduled_time }}
+    </div>
+    <button type="submit" class="w-full bg-green-600 text-white rounded-lg py-2 hover:bg-green-700">Save Post</button>
+  </form>
+</div>
+{% endblock %}

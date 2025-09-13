@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Generated Content Ideas{% endblock %}
+{% block header %}Generated Content Ideas{% endblock %}
+{% block content %}
+<h2 class="text-lg font-medium mb-4"></h2>
+<div class="idea-box">
+  <h3>Generated Content Ideas</h3>
+
+  <label class="idea selected">
+    <input type="radio" name="content-idea" checked />
+    <span>
+      Here is an informative post about your topic. It provides relevant details and helps the reader understand the subject matter.
+    </span>
+  </label>
+
+  <label class="idea">
+    <input type="radio" name="content-idea" />
+    <span>
+      This post shares key insights on your topic and offers useful information to the audience.
+    </span>
+  </label>
+
+  <label class="idea">
+    <input type="radio" name="content-idea" />
+    <span>
+      An explanatory post on your topic that breaks down important information for the reader.
+    </span>
+  </label>
+
+  <button class="more-ideas">More Content Ideas</button>
+</div>
+{% endblock %}
