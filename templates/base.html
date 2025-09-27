@@ -27,7 +27,7 @@
             <!-- Dropdown -->
             <div id="userDropdown" class="absolute right-0 top-10 mt-2 w-48 bg-white border rounded-lg shadow-lg hidden">
                 {% if user_data.is_authenticated %}
-                    <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
                     <a href="/settings" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
                     <a href="/logout" class="block px-4 py-2 text-red-600 hover:bg-red-100">Logout</a>
                 {% else %}
@@ -37,7 +37,10 @@
             </div>
         </div>
         <nav id="breadcrumbs" class="flex items-center text-sm text-gray-600 mb-6"></nav>
-        {% block content %}{% endblock %}
+        <div class="h-200 overflow-y-auto" style="max-height: 70vh;">
+          {% block content %}{% endblock %}
+        </div>
+        
     </div>
     <script>
     const path = window.location.pathname;

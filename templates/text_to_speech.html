@@ -2,47 +2,96 @@
 {% block title %}Text to Speech{% endblock %}
 {% block header %}Text to Speech{% endblock %}
 {% block content %}
-<div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-xl">
-    <!-- Header -->
-    <p class="text-gray-600 mb-4">
-      Generate voiceover audio from text using ElevenLabs.
-    </p>
+<div class="max-w-2xl mx-auto mt-10 p-8 bg-white rounded-2xl shadow-lg">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Text to Speech</h2>
+  <p class="text-gray-600 mb-6 text-center">Generate voiceover audio from text using ElevenLabs.</p>
 
-    <!-- Text Area -->
-    <textarea
-      class="w-full border border-gray-300 rounded-xl p-3 mb-4 focus:ring-2 focus:ring-blue-400 outline-none"
-      rows="5"
-      placeholder="Type or paste your script here..."
-    >The top 10 health benefits of regular exercise include improved heart health, increased strength, better mood, weight management, and more.</textarea>
-
-    <!-- Voice Dropdown -->
-    <label class="block text-gray-700 mb-2 font-medium">Voice</label>
-    <select class="w-full border border-gray-300 rounded-xl p-3 mb-4 focus:ring-2 focus:ring-blue-400 outline-none">
-      <option>Adam</option>
-      <option>Sophia</option>
-      <option>James</option>
-    </select>
-
-    <!-- Generate Button -->
-    <button
-      class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl shadow">
-      Generate
-    </button>
-
-    <!-- Preview Audio -->
-    <div class="mt-6 bg-gray-50 border rounded-xl p-4 flex items-center gap-3">
-      <button class="w-12 h-12 bg-white border rounded-full flex items-center justify-center shadow">
-        ▶
-      </button>
-      <div class="flex-1">
-        <div class="flex justify-between text-sm text-gray-600">
-          <span>0:00</span>
-          <span>1:25</span>
-        </div>
-        <div class="w-full h-2 bg-gray-300 rounded-full mt-1">
-          <div class="w-1/3 h-2 bg-blue-500 rounded-full"></div>
-        </div>
+  <div class="mb-8">
+    <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Content Idea</h3>
+    {% if selected_idea %}
+      <div class="border rounded-lg p-3 text-gray-700 mb-2 bg-gray-50">
+        <strong>{{ selected_idea.input_prompt }}</strong> ({{ selected_idea.post_type }}, {{ selected_idea.tone }})<br>
+        {{ selected_idea.idea_text }}
       </div>
+    {% else %}
+      <div class="text-gray-500">No idea selected.</div>
+    {% endif %}
+    <form method="post" class="mb-2 flex gap-2 items-center">
+      {% csrf_token %}
+      <label class="block text-sm font-medium text-gray-700">Change Content Idea</label>
+      <select name="idea_id" class="border rounded px-3 py-2">
+        {% for idea in all_ideas %}
+          <option value="{{ idea.id }}" {% if selected_idea and idea.id == selected_idea.id %}selected{% endif %}>{{ idea.input_prompt }} ({{ idea.tone }})</option>
+        {% endfor %}
+      </select>
+      <button type="submit" name="change_idea" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Change</button>
+    </form>
+  </div>
+
+  <div class="mb-8">
+    <h3 class="text-lg font-semibold mb-2 text-gray-700">Select or Change Media</h3>
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        {% for m in all_media %}
+          <div class="relative">
+            <label class="cursor-pointer block">
+              <input type="checkbox" name="media_ids" value="{{ m.id }}" class="absolute top-2 left-2 h-5 w-5 accent-blue-500" {% if m in selected_media %}checked{% endif %}>
+              <img src="{{ m.file.url }}" class="rounded-lg w-full h-32 object-cover border" alt="media">
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      <button type="submit" name="change_media" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Change Media Selection</button>
+    </form>
+    <div class="flex gap-4 flex-wrap mb-2">
+      {% for m in selected_media %}
+        <img src="{{ m.file.url }}" class="rounded-lg h-32 w-32 object-cover border mb-2 shadow" alt="media">
+      {% empty %}
+        <div class="text-gray-500">No media selected.</div>
+      {% endfor %}
     </div>
   </div>
+
+  <form method="post" class="space-y-4" id="ttsForm">
+    {% csrf_token %}
+    {% if form.errors %}
+      <div class="mb-3">
+        {% for field, errors in form.errors.items %}
+          {% for error in errors %}
+            <p class="text-red-600 text-sm">{{ error }}</p>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    <div>
+      {{ form.text.label_tag }}
+      <textarea name="text" rows="6" class="w-full border rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 resize-none" placeholder="Enter or edit your script here...">{{ form.text.value }}</textarea>
+    </div>
+    <div>
+      {{ form.voice.label_tag }}
+      {{ form.voice }}
+    </div>
+    <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">Generate</button>
+  </form>
+  <script type="application/json" id="ideaIdJson">{{ selected_idea.id|default:'null'|json_script:"ideaIdJson" }}</script>
+  <script type="application/json" id="mediaLenJson">{{ selected_media|length|json_script:"mediaLenJson" }}</script>
+  <script>
+    document.getElementById('ttsForm').addEventListener('submit', function(e) {
+      const ideaId = JSON.parse(document.getElementById('ideaIdJson').textContent);
+      const mediaLen = JSON.parse(document.getElementById('mediaLenJson').textContent);
+      if (!ideaId || !mediaLen) {
+        alert('Please select both a content idea and at least one media before generating.');
+        e.preventDefault();
+      }
+    });
+  </script>
+
+  {% if audio_url %}
+  <div class="mt-8 bg-gray-50 border rounded-xl p-6 flex flex-col items-center gap-3">
+    <h4 class="text-lg font-semibold mb-2 text-gray-700">Preview Audio</h4>
+    <audio controls src="{{ audio_url }}" class="w-full"></audio>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

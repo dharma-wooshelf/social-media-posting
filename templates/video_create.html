@@ -15,7 +15,20 @@
           <div class="border-2 border-dashed border-gray-300 rounded-lg w-full h-64 flex items-center justify-center bg-gray-50">
             <span class="text-gray-400">Upload or Preview Video</span>
           </div>
-          <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Upload Video</button>
+          <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            {% if form.errors %}
+              <div class="mb-3">
+                {% for field, errors in form.errors.items %}
+                  {% for error in errors %}
+                    <p class="text-red-600 text-sm">{{ error }}</p>
+                  {% endfor %}
+                {% endfor %}
+              </div>
+            {% endif %}
+            {{ form.file }}
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Upload Video</button>
+          </form>
         </div>
 
         <!-- Right: Caption + Hashtags -->

@@ -4,48 +4,50 @@
 {% block content %}
     <!-- Form -->
     <div class="space-y-4">
-      <!-- Post Type & Tone -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Post Type</label>
-          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            <option>Text</option>
-            <option>Image</option>
-            <option>Video</option>
-          </select>
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% if form.errors %}
+          <div class="mb-3">
+            {% for field, errors in form.errors.items %}
+              {% for error in errors %}
+                <p class="text-red-600 text-sm">{{ error }}</p>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.post_type.label }}</label>
+            {{ form.post_type }}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.tone.label }}</label>
+            {{ form.tone }}
+          </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Tone</label>
-          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            <option>Informative</option>
-            <option>Funny</option>
-            <option>Professional</option>
-          </select>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.input_prompt.label }}</label>
+          <input type="text" name="input_prompt" placeholder="Enter a topic or keywords"
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                 value="{{ form.input_prompt.value|default_if_none:'' }}">
         </div>
-      </div>
+        <button type="button" id="generateBtn" class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg hover:cursor-pointer">
+          Generate with Gemini
+        </button>
+      </form>
+      <!-- Previous Ideas -->
+      <h3 class="mt-8 mb-2 text-lg font-semibold text-gray-700">Previously Generated Ideas</h3>
+      <ul class="space-y-2">
+        {% for idea in previous_ideas %}
+          <li class="border rounded-lg p-3 text-gray-700 cursor-pointer hover:bg-blue-50" onclick="window.location.href='{% url "media_selection" %}?idea_id={{ idea.id }}';">
+            <strong>{{ idea.input_prompt }}</strong> ({{ idea.post_type }}, {{ idea.tone }})<br>
+            {{ idea.idea_text }}
+          </li>
+        {% empty %}
+          <li class="text-gray-500">No ideas generated yet.</li>
+        {% endfor %}
+      </ul>
 
-      <!-- Input Prompt -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Input Prompt</label>
-        <input type="text" placeholder="Enter a topic or keywords"
-               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-      </div>
-
-      <!-- Generate Button -->
-      <button class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg hover:cursor-pointer" onclick="openModal()" >
-        Generate with Gemini™
-      </button>
-
-      <!-- Output Box -->
-      <div class="border border-gray-300 rounded-lg p-3 text-gray-700">
-        Here is an informative post about your topic. It provides relevant details and helps the reader understand the subject matter.
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex justify-end gap-3">
-        <button class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300">Edit</button>
-        <button class="px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 hover:cursor-pointer">Save</button>
-      </div>
     </div>
     <!-- Modal -->
       <div id="contentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
@@ -58,27 +60,18 @@
           </div>
 
           <!-- Content Ideas (radio buttons) -->
-          <div class="space-y-3 mb-4">
-            <label class="flex items-start gap-2 border rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
-              <input type="radio" name="idea" class="mt-1 text-blue-500" checked>
-              <span>Here is an informative post about your topic. It provides relevant details and helps the reader understand the subject matter.</span>
-            </label>
-
-            <label class="flex items-start gap-2 border rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
-              <input type="radio" name="idea" class="mt-1 text-blue-500">
-              <span>This post shares key insights on your topic and offers useful information to the audience.</span>
-            </label>
-
-            <label class="flex items-start gap-2 border rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
-              <input type="radio" name="idea" class="mt-1 text-blue-500">
-              <span>An explanatory post on your topic that breaks down important information for the reader.</span>
-            </label>
-          </div>
-
-          <!-- Footer Button -->
-          <button class="w-full bg-blue-400 text-white py-2 rounded-lg hover:bg-blue-500 hover:cursor-pointer">
-            More Content Ideas
-          </button>
+          <form id="saveIdeaForm" method="post" class="space-y-3 mb-4">
+            {% csrf_token %}
+            <div id="modalIdeas"></div>
+            <input type="hidden" name="post_type" id="modalPostType">
+            <input type="hidden" name="tone" id="modalTone">
+            <input type="hidden" name="input_prompt" id="modalInputPrompt">
+            <input type="hidden" name="idea_text" id="modalIdeaText">
+            <div class="flex gap-4 mt-4">
+              <button type="submit" name="save" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Save</button>
+              <button type="submit" name="proceed" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Proceed to Select Media</button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -91,5 +84,41 @@
           document.getElementById("contentModal").classList.add("hidden");
           document.getElementById("contentModal").classList.remove("flex");
         }
+
+        document.getElementById('generateBtn').onclick = function() {
+          const postType = document.querySelector('[name="post_type"]').value;
+          const tone = document.querySelector('[name="tone"]').value;
+          const inputPrompt = document.querySelector('[name="input_prompt"]').value;
+          fetch('', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value
+            },
+            body: `post_type=${encodeURIComponent(postType)}&tone=${encodeURIComponent(tone)}&input_prompt=${encodeURIComponent(inputPrompt)}`
+          })
+          .then(response => response.json())
+          .then(data => {
+            let ideasHtml = '';
+            data.ideas.forEach((idea, idx) => {
+              ideasHtml += `<label class='flex items-start gap-2 border rounded-lg p-3 hover:bg-gray-50 cursor-pointer'>` +
+                `<input type='radio' name='modal_idea' value='${idea.replace(/'/g, "&#39;")}' class='mt-1 text-blue-500' ${idx===0?'checked':''}>` +
+                `<span>${idea}</span></label>`;
+            });
+            document.getElementById('modalIdeas').innerHTML = ideasHtml;
+            document.getElementById('modalPostType').value = postType;
+            document.getElementById('modalTone').value = tone;
+            document.getElementById('modalInputPrompt').value = inputPrompt;
+            document.getElementById('modalIdeaText').value = data.ideas[0];
+            openModal();
+          });
+        };
+
+        document.getElementById('modalIdeas').addEventListener('change', function(e) {
+          if (e.target.name === 'modal_idea') {
+            document.getElementById('modalIdeaText').value = e.target.value;
+          }
+        });
       </script>
 {% endblock %}

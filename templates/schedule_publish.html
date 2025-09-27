@@ -2,10 +2,11 @@
 {% block title %}Schedule & Publish{% endblock %}
 {% block header %}Schedule & Publish{% endblock %}
 {% block content %}
-<div class="flex space-x-6">
+<form method="post" class="flex space-x-6">
+  {% csrf_token %}
   <div>
-    <input type="date" class="border rounded p-2 mb-2">
-    <input type="time" class="border rounded p-2">
+    {{ form.scheduled_time.label_tag }}
+    {{ form.scheduled_time }}
     <div class="mt-4 space-y-2">
       <label><input type="checkbox" checked> Facebook</label><br>
       <label><input type="checkbox" checked> Instagram</label><br>
@@ -17,6 +18,6 @@
     <img src="https://via.placeholder.com/200" class="rounded mb-2">
     <p class="text-sm">The top 10 health benefits of regular exercise include...</p>
   </div>
-</div>
-<button class="w-full mt-4 bg-blue-500 text-white py-2 rounded">Schedule Post</button>
+  <button type="submit" class="w-full mt-4 bg-blue-500 text-white py-2 rounded">Schedule Post</button>
+</form>
 {% endblock %}

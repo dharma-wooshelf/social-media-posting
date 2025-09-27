@@ -34,7 +34,20 @@ class PostForm(forms.ModelForm):
         model = SocialPost
         fields = ["caption", "hashtags", "post_type"]
 
-class ScheduleForm(forms.ModelForm):
+
     class Meta:
         model = Schedule
         fields = ["scheduled_time"]
+
+# Profile update form
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email"]
+
+# Social media linking form
+class SocialLinkForm(forms.Form):
+    facebook = forms.URLField(required=False, label="Facebook URL")
+    twitter = forms.URLField(required=False, label="Twitter URL")
+    instagram = forms.URLField(required=False, label="Instagram URL")
+    linkedin = forms.URLField(required=False, label="LinkedIn URL")
