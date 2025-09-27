@@ -6,42 +6,120 @@
   <main class="flex-grow flex justify-center items-start px-6 py-10">
     <div class="bg-white w-full max-w-4xl rounded-xl shadow p-8">
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <!-- Left: Image Preview -->
-        <div class="flex flex-col items-center">
-          <div class="border-2 border-dashed border-gray-300 rounded-lg w-full h-64 flex items-center justify-center bg-gray-50">
-            <span class="text-gray-400">Upload or Preview Image</span>
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Content Idea</h3>
+          <div class="bg-white w-full max-w-4xl rounded-2xl shadow-lg p-10">
+
+            <!-- Content Idea Card -->
+            <div class="mb-10">
+              <h3 class="text-xl font-bold mb-3 text-gray-800">Selected Content Idea</h3>
+              <form method="get" class="mb-4 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-700">Select Content Idea</label>
+                <select name="idea_id" class="border rounded px-3 py-2">
+                  {% for idea in all_ideas %}
+                    <option value="{{ idea.id }}" {% if selected_idea and idea.id == selected_idea.id %}selected{% endif %}>{{ idea.input_prompt }} ({{ idea.tone }})</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Select</button>
+              </form>
+              {% if selected_idea %}
+                <div class="border rounded-xl p-4 text-gray-700 mb-2 bg-gray-50 shadow-sm">
+                  <strong>{{ selected_idea.input_prompt }}</strong> <span class="text-xs text-gray-500">({{ selected_idea.post_type }}, {{ selected_idea.tone }})</span><br>
+                  <span class="text-base">{{ selected_idea.idea_text }}</span>
+                </div>
+              {% else %}
+                <div class="text-gray-400">No idea selected.</div>
+              {% endif %}
+            </div>
+
+            <!-- Media Card -->
+            <div class="mb-10">
+              <h3 class="text-xl font-bold mb-3 text-gray-800">Selected Media</h3>
+              <form method="get" class="mb-4 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-700">Select Media</label>
+                <select name="media_ids" multiple class="border rounded px-3 py-2">
+                  {% for m in all_media %}
+                    <option value="{{ m.id }}" {% if m in selected_media %}selected{% endif %}>{{ m.file.name|slice:"20:" }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Select</button>
+              </form>
+              <div class="flex gap-4 flex-wrap mb-2">
+                {% for m in selected_media %}
+                  <img src="{{ m.file.url }}" class="rounded-xl h-32 w-32 object-cover border mb-2 shadow" alt="media">
+                {% empty %}
+                  <div class="text-gray-400">No media selected.</div>
+                {% endfor %}
+              </div>
+              <div class="mt-4">
+                <h4 class="text-md font-semibold mb-2 text-gray-700">All Existing Media</h4>
+                <div class="flex gap-4 flex-wrap">
+                  {% for m in all_media %}
+                    <img src="{{ m.file.url }}" class="rounded-lg h-20 w-20 object-cover border mb-2 shadow" alt="media">
+                  {% empty %}
+                    <div class="text-gray-400">No media uploaded yet.</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- TTS Audio Card -->
+            <div class="mb-10">
+              <h3 class="text-xl font-bold mb-3 text-gray-800">Selected TTS Audio</h3>
+              <form method="get" class="mb-4 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-700">Select TTS Audio</label>
+                <select name="tts_id" class="border rounded px-3 py-2">
+                  {% for tts in all_tts %}
+                    <option value="{{ tts.id }}" {% if tts_audio and tts.id == tts_audio.id %}selected{% endif %}>{{ tts.voice }} ({{ tts.script_text|truncatechars:30 }})</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Select</button>
+              </form>
+              {% if tts_audio and tts_audio.audio_file %}
+                <div class="mt-2 bg-gray-50 border rounded-xl p-6 flex flex-col items-center gap-3 shadow-sm">
+                  <h4 class="text-lg font-semibold mb-2 text-gray-700">Preview Audio</h4>
+                  <audio controls src="{{ tts_audio.audio_file.url }}" class="w-full"></audio>
+                  <div class="text-gray-600 text-sm mt-2">Voice: {{ tts_audio.voice }}</div>
+                  <div class="text-gray-600 text-sm mt-2">Script: {{ tts_audio.script_text }}</div>
+                </div>
+              {% else %}
+                <div class="text-gray-400">No TTS audio generated.</div>
+              {% endif %}
+            </div>
+
+            <!-- Social Post Form -->
+            <form method="post" class="space-y-6">
+              {% csrf_token %}
+              {% if form.errors %}
+                <div class="mb-3">
+                  {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                      <p class="text-red-600 text-sm">{{ error }}</p>
+                    {% endfor %}
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <div>
+                {{ form.caption.label_tag }}
+                {{ form.caption }}
+              </div>
+              <div>
+                {{ form.hashtags.label_tag }}
+                {{ form.hashtags }}
+              </div>
+              <div>
+                {{ form.media.label_tag }}
+                {{ form.media }}
+              </div>
+              <div>
+                {{ form.post_type.label_tag }}
+                {{ form.post_type }}
+              </div>
+              <button type="submit" class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Save Post</button>
+            </form>
           </div>
-          <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Upload Image</button>
-        </div>
-
-        <!-- Right: Caption + Hashtags -->
-        <div class="flex flex-col gap-4">
-
-          <!-- Caption -->
-          <div>
-            <label class="block text-gray-700 font-medium mb-2">Caption</label>
-            <textarea class="w-full border rounded-lg px-3 py-2 h-32 focus:ring-2 focus:ring-blue-500" placeholder="Write your caption here..."></textarea>
-          </div>
-
-          <!-- Hashtags -->
-          <div>
-            <label class="block text-gray-700 font-medium mb-2">Hashtags</label>
-            <textarea class="w-full border rounded-lg px-3 py-2 h-24 focus:ring-2 focus:ring-blue-500" placeholder="#hashtag1 #hashtag2 #hashtag3"></textarea>
-          </div>
-
-          <!-- Buttons -->
-          <div class="flex justify-end gap-4 mt-4">
-            <button class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">Generate Hashtags</button>
-            <button onclick="window.location.href='social-video.html'" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-              Next
-            </button>
-          </div>
-        </div>
-
       </div>
-
     </div>
   </main>
 {% endblock %}

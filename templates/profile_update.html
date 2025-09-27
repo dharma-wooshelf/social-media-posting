@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+{% block title %}Update profile{% endblock %}
+{% block header %}Update profile{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Update Profile</h2>
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        <h3 class="text-lg font-semibold mb-2 text-gray-700">Basic Info</h3>
+        {% for field in form %}
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2">{{ field.label_tag }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <!-- <h3 class="text-lg font-semibold mt-8 mb-2 text-gray-700">Connect Social Media</h3>
+        <div class="grid grid-cols-1 gap-4">
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2" for="facebook">Facebook URL</label>
+                <input type="url" name="facebook" id="facebook" value="{{ profile.facebook }}" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300" placeholder="https://facebook.com/yourprofile">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2" for="twitter">Twitter URL</label>
+                <input type="url" name="twitter" id="twitter" value="{{ profile.twitter }}" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300" placeholder="https://twitter.com/yourprofile">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2" for="instagram">Instagram URL</label>
+                <input type="url" name="instagram" id="instagram" value="{{ profile.instagram }}" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300" placeholder="https://instagram.com/yourprofile">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2" for="linkedin">LinkedIn URL</label>
+                <input type="url" name="linkedin" id="linkedin" value="{{ profile.linkedin }}" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300" placeholder="https://linkedin.com/in/yourprofile">
+            </div>
+        </div>
+        <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition mt-6">Update</button> -->
+    </form>
+</div>
+{% endblock %}

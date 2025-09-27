@@ -2,53 +2,105 @@
 {% block title %}Media Selection{% endblock %}
 {% block header %}Media Selection{% endblock %}
 {% block content %}
-<!-- Dropbox Row -->
-    <div class="flex justify-between items-center bg-gray-50 rounded-lg px-4 py-3 mb-6">
-      <div class="flex items-center gap-2">
-        <img src="https://cdn.iconscout.com/icon/free/png-256/dropbox-148-675786.png" class="h-6 w-6" alt="Dropbox" />
-        <span class="font-medium text-gray-700">Dropbox</span>
-      </div>
-      <button class="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600">Browse</button>
+<div class="mb-6">
+  <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Content Idea</h3>
+  {% if selected_idea %}
+    <div class="border rounded-lg p-3 text-gray-700 mb-2">
+      <strong>{{ selected_idea.input_prompt }}</strong> ({{ selected_idea.post_type }}, {{ selected_idea.tone }})<br>
+      {{ selected_idea.idea_text }}
     </div>
+  {% else %}
+    <div class="text-gray-500">No idea selected.</div>
+  {% endif %}
+  <form method="get" class="mb-4">
+    <label class="block text-sm font-medium text-gray-700 mb-1">Change Content Idea</label>
+    <select name="idea_id" class="w-full border rounded px-3 py-2">
+      {% for idea in all_ideas %}
+        <option value="{{ idea.id }}" {% if selected_idea and idea.id == selected_idea.id %}selected{% endif %}>{{ idea.input_prompt }} ({{ idea.tone }})</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Change</button>
+  </form>
+</div>
 
-    <!-- Media Grid -->
+<div class="mb-6">
+  <h3 class="text-lg font-semibold mb-2 text-gray-700">Select or Upload Media</h3>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
     <div class="grid grid-cols-2 gap-4 mb-6">
-      <!-- Media 1 -->
-      <label class="relative cursor-pointer">
-        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500" checked>
-        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-lg w-full h-32 object-cover border" alt="media1">
-      </label>
-
-      <!-- Media 2 -->
-      <label class="relative cursor-pointer">
-        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500">
-        <img src="https://picsum.photos/id/1015/200/150" class="rounded-lg w-full h-32 object-cover border" alt="media2">
-      </label>
-
-      <!-- Media 3 -->
-      <label class="relative cursor-pointer">
-        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500">
-        <img src="https://picsum.photos/id/1003/200/150" class="rounded-lg w-full h-32 object-cover border" alt="media3">
-      </label>
-
-      <!-- Media 4 -->
-      <label class="relative cursor-pointer">
-        <input type="checkbox" class="absolute top-2 left-2 h-5 w-5 accent-blue-500">
+      {% for m in media %}
         <div class="relative">
-          <img src="https://picsum.photos/id/1025/200/150" class="rounded-lg w-full h-32 object-cover border" alt="media4">
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="bg-white rounded-full p-2 shadow">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M6.5 5.5l7 4.5-7 4.5v-9z"/>
-              </svg>
-            </div>
-          </div>
+          <label class="cursor-pointer block">
+            <input type="checkbox" name="selected_media" value="{{ m.id }}" class="absolute top-2 left-2 h-5 w-5 accent-blue-500"
+              {% if selected_media and m.id in selected_media %}checked{% endif %}>
+            <img src="{{ m.file.url }}" class="rounded-lg w-full h-32 object-cover border" alt="media">
+          </label>
+          <button type="submit" formaction="?idea_id={{ selected_idea.id }}" formmethod="post" name="delete_media_id" value="{{ m.id }}" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs hover:bg-red-700" title="Delete" onclick="return confirm('Delete this media?');">&#10006;</button>
         </div>
-      </label>
+      {% endfor %}
     </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Upload New Media</label>
+      <div id="dropzone" class="w-full border-2 border-dashed border-blue-400 rounded px-3 py-8 text-center cursor-pointer transition hover:bg-blue-50">
+        <span id="dropzone-text">Drag & drop or click to select a file</span>
+        <input type="file" name="file" id="fileInput" class="hidden">
+        <div id="preview" class="mt-4"></div>
+      </div>
+    </div>
+    <button type="submit" name="proceed_tts" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" id="proceedTTSBtn">Proceed to Text to Speech</button>
+    <script type="application/json" id="ideaIdJson">{{ selected_idea.id|default:'null'|json_script:"ideaIdJson" }}</script>
+    <script>
+      document.getElementById('proceedTTSBtn').addEventListener('click', function(e) {
+        const ideaId = JSON.parse(document.getElementById('ideaIdJson').textContent);
+        const mediaCheckboxes = document.querySelectorAll('input[name="selected_media"]:checked');
+        if (!ideaId || mediaCheckboxes.length === 0) {
+          alert('Please select both a content idea and at least one media before proceeding.');
+          e.preventDefault();
+        }
+      });
+    </script>
+    <!-- Remove hidden input, let checkboxes submit all selected values -->
+    <script>
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('fileInput');
+      const preview = document.getElementById('preview');
+      const dropzoneText = document.getElementById('dropzone-text');
 
-    <!-- Select Button -->
-    <button class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-      Select
-    </button>
+      dropzone.addEventListener('click', () => fileInput.click());
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('bg-blue-100');
+      });
+      dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('bg-blue-100');
+      });
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('bg-blue-100');
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+          showPreview(fileInput.files[0]);
+        }
+      });
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length) {
+          showPreview(fileInput.files[0]);
+        }
+      });
+      function showPreview(file) {
+        preview.innerHTML = '';
+        dropzoneText.style.display = 'none';
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            preview.innerHTML = `<img src='${e.target.result}' class='mx-auto rounded-lg h-32 w-32 object-cover border'>`;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          preview.innerHTML = `<span class='text-gray-500'>${file.name}</span>`;
+        }
+      }
+    </script>
+  </form>
+</div>
 {% endblock %}

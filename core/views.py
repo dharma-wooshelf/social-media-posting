@@ -1,3 +1,54 @@
+from .forms import ProfileUpdateForm, SocialLinkForm
+from django.contrib.auth.decorators import login_required
+
+
+# Profile update view (with social media fields)
+@login_required
+def update_profile_view(request):
+    user = request.user
+    profile = user.profile
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, instance=user)
+        facebook = request.POST.get("facebook", "")
+        twitter = request.POST.get("twitter", "")
+        instagram = request.POST.get("instagram", "")
+        linkedin = request.POST.get("linkedin", "")
+        if form.is_valid():
+            form.save()
+            profile.facebook = facebook
+            profile.twitter = twitter
+            profile.instagram = instagram
+            profile.linkedin = linkedin
+            profile.save()
+            return redirect("profile")
+    else:
+        form = ProfileUpdateForm(instance=user)
+    return render(request, "profile_update.html", {
+        "form": form,
+        "profile": profile,
+    })
+
+# Social media linking view
+@login_required
+def link_social_view(request):
+    profile = request.user.profile
+    if request.method == "POST":
+        form = SocialLinkForm(request.POST)
+        if form.is_valid():
+            profile.facebook = form.cleaned_data["facebook"]
+            profile.twitter = form.cleaned_data["twitter"]
+            profile.instagram = form.cleaned_data["instagram"]
+            profile.linkedin = form.cleaned_data["linkedin"]
+            profile.save()
+            return redirect("profile")
+    else:
+        form = SocialLinkForm(initial={
+            "facebook": profile.facebook,
+            "twitter": profile.twitter,
+            "instagram": profile.instagram,
+            "linkedin": profile.linkedin,
+        })
+    return render(request, "link_social.html", {"form": form})
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required

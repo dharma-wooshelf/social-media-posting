@@ -1,22 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="max-w-lg mx-auto mt-10 bg-white shadow rounded-lg p-6">
-  <h2 class="text-xl font-bold mb-4">Upload Media</h2>
-
-  {% if form.errors %}
-    <div class="mb-3">
-      {% for field, errors in form.errors.items %}
-        {% for error in errors %}
-          <p class="text-red-600 text-sm">{{ error }}</p>
+<div class="max-w-lg mx-auto mt-10 bg-white shadow rounded-lg p-6" style="height: 600px; display: flex; flex-direction: column;">
+  <h2 class="text-xl font-bold mb-4" style="flex: 0 0 auto;">Upload Media</h2>
+  <div style="flex: 1 1 auto; overflow-y: auto;">
+    {% if form.errors %}
+      <div class="mb-3">
+        {% for field, errors in form.errors.items %}
+          {% for error in errors %}
+            <p class="text-red-600 text-sm">{{ error }}</p>
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
-    </div>
-  {% endif %}
-
-  <form method="POST" enctype="multipart/form-data" class="space-y-4">
-    {% csrf_token %}
-    {{ form.file }}
-    <button type="submit" class="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700">Upload</button>
-  </form>
+      </div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      {% if form.errors %}
+        <div class="mb-3">
+          {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+              <p class="text-red-600 text-sm">{{ error }}</p>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      {% endif %}
+      {{ form.file }}
+      {{ form.media_type }}
+      <button type="submit" class="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700">Upload</button>
+    </form>
+  </div>
 </div>
 {% endblock %}
